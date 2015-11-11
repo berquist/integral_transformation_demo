@@ -1,0 +1,50 @@
+#!/usr/bin/env ipython
+
+## https://joshuagoings.wordpress.com/2013/05/14/efficient-two-electron-integral-transformations-in-python-or-adventures-in-scaling/
+
+import numpy as np
+
+import integral_transformation_py
+import integral_transformation_cy
+
+# modules = (
+#     integral_transformation_py,
+#     integral_transformation_cy,
+# )
+
+if __name__ == '__main__':
+
+    dim = 5
+
+    INT = np.random.randint(9, size=(dim, dim, dim, dim)) # Our toy "two electron integrals"
+    C = np.random.randint(9, size=(dim, dim)) # Toy "wavefunction coefficients"
+
+    # Set up random index to check correctness.
+    # i = np.random.randint(dim)
+    # j = np.random.randint(dim)
+    # k = np.random.randint(dim)
+    # l = np.random.randint(dim)
+
+    # for m in modules:
+    #     print(m)
+
+    #     transformed_ints_list = [
+    #         m.ao2mo_original_n8(INT, C),
+    #         m.ao2mo_original_n5(INT, C),
+    #     ]
+
+    #     assert_list = [mat[i, j, k, l] for mat in transformed_ints_list]
+    #     print(assert_list)
+
+    calls = (
+        # integral_transformation_py.ao2mo_original_n8,
+        # integral_transformation_cy.ao2mo_original_n8,
+        integral_transformation_cy.ao2mo_cython_n8,
+        # integral_transformation_py.ao2mo_original_n5,
+        # integral_transformation_cy.ao2mo_original_n5,
+        integral_transformation_cy.ao2mo_cython_n5,
+    )
+
+    for c in calls:
+        print(c)
+        %timeit c(INT, C)
